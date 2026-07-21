@@ -11,11 +11,19 @@ use Inertia\Inertia;
 |--------------------------------------------------------------------------
 */
 
-
-
-// 1. หน้าแรกสุด: เมื่อเข้าเว็บมา จะบังคับเด้ง (Redirect) ไปที่ผังที่นั่งโซน 1 ทันที
+// 1. หน้าแรกสุด: เปลี่ยนกลับเป็น Welcome ของ Laravel ตามโจทย์
 Route::get('/', function () {
-    return redirect()->route('booking.show', ['zone_id' => 1]);
+    return view('welcome');
+});
+
+// Quiz 3: ระบบประเมินความพึงพอใจ
+Route::get('/quiz3', function () {
+    return Inertia::render('Quiz3');
+});
+
+// Quiz 4: ตารางข้อมูลอุปกรณ์ IoT
+Route::get('/quiz4', function () {
+    return Inertia::render('Quiz4');
 });
 
 // 2. หน้าเลือกที่นั่ง: จะส่งงานไปที่ฟังก์ชัน show() เพื่อเรนเดอร์หน้า SeatSelection.jsx
@@ -31,15 +39,10 @@ Route::get('/booking/checkout/{reservation_id}', [BookingController::class, 'che
 Route::post('/payment/process', [BookingController::class, 'processPayment'])->name('payment.process');
 
 // routes/web.php
-// use App\Models\Product;
 Route::get('/product', function () {
     $products = Product::all();
     return Inertia::render('ProductList', compact('products') );
 })->name('product');
-
-Route::get('/product-others', function () {
-    return Inertia::render('ProductOthers');
-})->name('product-others');
 
 Route::get('/product-others', function () {
     return Inertia::render('ProductOthers');
