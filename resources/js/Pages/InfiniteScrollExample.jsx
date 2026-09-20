@@ -1,4 +1,4 @@
-import BootstrapLayout from "@/layouts/BootstrapLayout";
+import BootstrapLayout from "@/Layouts/BootstrapLayout";
 import { Head } from "@inertiajs/react";
 import React, { useState, useEffect } from "react";
 
@@ -57,7 +57,7 @@ function InfiniteScrollExample() {
 
                 <div className="row row-cols-1 row-cols-md-3 g-4">
                     {data.map((item, index) => (
-                        <div className="col">
+                        <div className="col" key={index}>
                             <div className="card h-100">
                                 <img src={"https://picsum.photos/200/"+(100+index)} className="card-img-top" alt="..." />
                                 <div className="card-body">
@@ -70,7 +70,6 @@ function InfiniteScrollExample() {
                     ))}
                 </div>
                
-               
                 {loading && <p>Loading more...</p>}
                 {!hasMore && <p>No more data to load.</p>}
             </div>
@@ -78,3 +77,5 @@ function InfiniteScrollExample() {
         </BootstrapLayout>
     );
 }
+
+export default InfiniteScrollExample;

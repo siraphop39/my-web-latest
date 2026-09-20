@@ -6,10 +6,26 @@ import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 export default function AuthenticatedLayout({ header, children }) {
-    const user = usePage().props.auth.user;
+    const user = usePage().props.auth?.user || { name: 'ผู้ใช้งาน', email: '' };
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
+
+    const safeRoute = (name, fallback = '#') => {
+        try {
+            return typeof route === 'function' && route().has(name) ? route(name) : fallback;
+        } catch (e) {
+            return fallback;
+        }
+    };
+
+    const isOrdersActive = () => {
+        try {
+            return typeof route === 'function' && route().has('orders.index') ? route().current('orders.*') : false;
+        } catch (e) {
+            return false;
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gray-100">
@@ -25,10 +41,10 @@ export default function AuthenticatedLayout({ header, children }) {
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
+                                    href={safeRoute('orders.index', '/orders')}
+                                    active={isOrdersActive()}
                                 >
-                                    Dashboard
+                                    จัดการใบสั่งซื้อ (Orders)
                                 </NavLink>
                             </div>
                         </div>
@@ -62,12 +78,12 @@ export default function AuthenticatedLayout({ header, children }) {
 
                                     <Dropdown.Content>
                                         <Dropdown.Link
-                                            href={route('profile.edit')}
+                                            href={safeRoute('profile.edit', '/profile')}
                                         >
                                             Profile
                                         </Dropdown.Link>
                                         <Dropdown.Link
-                                            href={route('logout')}
+                                            href={safeRoute('logout', '/logout')}
                                             method="post"
                                             as="button"
                                         >
@@ -129,10 +145,10 @@ export default function AuthenticatedLayout({ header, children }) {
                 >
                     <div className="space-y-1 pb-3 pt-2">
                         <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
+                            href={safeRoute('orders.index', '/orders')}
+                            active={isOrdersActive()}
                         >
-                            Dashboard
+                            จัดการใบสั่งซื้อ (Orders)
                         </ResponsiveNavLink>
                     </div>
 
@@ -147,12 +163,12 @@ export default function AuthenticatedLayout({ header, children }) {
                         </div>
 
                         <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>
+                            <ResponsiveNavLink href={safeRoute('profile.edit', '/profile')}>
                                 Profile
                             </ResponsiveNavLink>
                             <ResponsiveNavLink
                                 method="post"
-                                href={route('logout')}
+                                href={safeRoute('logout', '/logout')}
                                 as="button"
                             >
                                 Log Out

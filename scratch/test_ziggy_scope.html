@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+const Ziggy = { routes: {} };
+</script>
+<script type="module">
+try {
+    console.log("window.Ziggy:", window.Ziggy);
+} catch(e) {
+    console.log("window.Ziggy error:", e.message);
+}
+try {
+    console.log("Ziggy:", Ziggy);
+} catch(e) {
+    console.log("Ziggy error:", e.message);
+}
+</script>
+</head>
+<body></body>
+</html>

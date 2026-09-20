@@ -1,47 +1,49 @@
 <?php
 
-use App\Http\Controllers\BookingController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProfileController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes - แหล่งรวมเส้นทางระบบจองตั๋วคอนเสิร์ต
+| Web Routes
 |--------------------------------------------------------------------------
 */
 
-
-
-// 1. หน้าแรกสุด: เมื่อเข้าเว็บมา จะบังคับเด้ง (Redirect) ไปที่ผังที่นั่งโซน 1 ทันที
+// หน้าแรกสุด: หากล็อกอินแล้วไปหน้า Orders หากยังไม่ล็อกอินไปหน้า Login
 Route::get('/', function () {
-    return redirect()->route('booking.show', ['zone_id' => 1]);
+    return auth()->check() ? redirect()->route('orders.index') : redirect()->route('login');
 });
 
-// 2. หน้าเลือกที่นั่ง: จะส่งงานไปที่ฟังก์ชัน show() เพื่อเรนเดอร์หน้า SeatSelection.jsx
-Route::get('/booking/zone/{zone_id}', [BookingController::class, 'show'])->name('booking.show');
+// Dashboard redirect to Orders
+Route::get('/dashboard', function () {
+    return redirect()->route('orders.index');
+})->middleware(['auth'])->name('dashboard');
 
-// 3. API สำหรับล็อกที่นั่ง: เมื่อคลิกที่นั่ง React จะยิง Post มาที่นี่เพื่อทำ Database Locking
-Route::post('/seats/lock', [BookingController::class, 'lockSeat'])->name('seats.lock');
+// Protected Routes สำหรับระบบจัดการการขายและใบสั่งซื้อ
+Route::middleware(['auth'])->group(function () {
+    // Orders CRUD
+    Route::resource('orders', OrderController::class);
+    
+    // Quick Status Update (Pending -> Shipped -> Delivered)
+    Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
+    
+    // พิมพ์ / บันทึกใบเสร็จรับเงิน PDF
+    Route::get('/orders/{order}/receipt', [OrderController::class, 'receipt'])->name('orders.receipt');
 
-// 4. หน้าชำระเงิน: แสดงหน้า Checkout.jsx พร้อมนับเวลาถอยหลัง 10 นาที
-Route::get('/booking/checkout/{reservation_id}', [BookingController::class, 'checkout'])->name('booking.checkout');
+    // Profile Management (Laravel Breeze)
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-// 5. ประมวลผลจ่ายเงิน: รับข้อมูลจากหน้า Checkout เพื่อยืนยันการตัดบัตรและเปลี่ยนสถานะเป็น 'sold'
-Route::post('/payment/process', [BookingController::class, 'processPayment'])->name('payment.process');
-
-// routes/web.php
-// use App\Models\Product;
+// หน้าสินค้าเดิม (เพื่อ Backward Compatibility)
 Route::get('/product', function () {
     $products = Product::all();
-    return Inertia::render('ProductList', compact('products') );
+    return Inertia::render('ProductList', compact('products'));
 })->name('product');
 
-Route::get('/product-others', function () {
-    return Inertia::render('ProductOthers');
-})->name('product-others');
-
-Route::get('/product-others', function () {
-    return Inertia::render('ProductOthers');
-})->name('product-others');
-
+// โหลด Breeze Authentication Routes (login, register, logout, etc.)
+require __DIR__.'/auth.php';

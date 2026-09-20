@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: sales-order-system
+    runtime: docker
+    plan: free
+    region: singapore
+    envVars:
+      - key: APP_NAME
+        value: "ระบบจัดการการขายและใบสั่งซื้อ"
+      - key: APP_ENV
+        value: production
+      - key: APP_URL
+        value: "https://sales-order-system-gur1.onrender.com"
+      - key: APP_DEBUG
+        value: "true"
+      - key: APP_KEY
+        value: "base64:m9SLxkRXjd2UzAUT7TiQqNBY/Ij7OSA6mHqk4vKAk/w="
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: SESSION_DRIVER
+        value: cookie
+      - key: CACHE_STORE
+        value: array
+      - key: QUEUE_CONNECTION
+        value: sync
