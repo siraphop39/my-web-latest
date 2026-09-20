@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 
 export default function Index({ orders = { data: [], links: [] }, filters = {}, stats = {} }) {
+    const { auth } = usePage().props;
+    const authorName = auth?.user?.name || 'รัชชานนท์ ช่วยบุญ, สิระภพ นาคคำ';
     const [search, setSearch] = useState(filters?.search || '');
     const [statusFilter, setStatusFilter] = useState(filters?.status || '');
 
@@ -79,7 +81,7 @@ export default function Index({ orders = { data: [], links: [] }, filters = {}, 
                             ระบบจัดการการขายและใบสั่งซื้อ (Sales & Order Management System)
                         </h2>
                         <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                            ผู้จัดทำ: รัชชานนท์ ช่วยบุญ, สิระภพ นาคคำ
+                            ผู้จัดทำ: {authorName}
                         </p>
                     </div>
                     <Link

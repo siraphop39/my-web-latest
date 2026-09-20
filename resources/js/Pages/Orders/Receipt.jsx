@@ -1,7 +1,9 @@
 import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 
 export default function Receipt({ order }) {
+    const { auth } = usePage().props;
+    const authorName = auth?.user?.name || 'รัชชานนท์ ช่วยบุญ, สิระภพ นาคคำ';
     const handlePrint = () => {
         window.print();
     };
@@ -50,7 +52,7 @@ export default function Receipt({ order }) {
                                 ระบบจัดการการขายและใบสั่งซื้อ
                             </h1>
                             <p className="text-xs text-gray-500 mt-1">
-                                ผู้จัดทำ: <strong>รัชชานนท์ ช่วยบุญ, สิระภพ นาคคำ</strong>
+                                ผู้จัดทำ: <strong>{authorName}</strong>
                             </p>
                         </div>
                         <div className="sm:text-right">

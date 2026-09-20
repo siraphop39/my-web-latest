@@ -21,7 +21,7 @@ class SalesOrderSeeder extends Seeder
         $user = User::firstOrCreate(
             ['email' => 'admin@example.com'],
             [
-                'name' => 'รัชชานนท์ & สิระภพ (Admin)',
+                'name' => 'รัชชานนท์ ช่วยบุญ, สิระภพ นาคคำ',
                 'password' => Hash::make('password'),
             ]
         );
